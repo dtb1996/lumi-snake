@@ -1,0 +1,1 @@
+A variation on the classic Snake game created for the GameDevJs 2024 game jam
