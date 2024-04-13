@@ -104,6 +104,14 @@ function update() {
 }
 
 function getKeyUp(e) {
+    if (e.code == "KeyP" || e.code == "Escape") {
+        if (updateTimer == null) {
+            startUpdateTimer()
+        } else {
+            stopUpdateTimer()
+        }
+    }
+
     if (!acceptInput) {
         return
     }
@@ -124,12 +132,6 @@ function getKeyUp(e) {
         velocityX = 1
         velocityY = 0
         acceptInput = false
-    } else if (e.code == "KeyP" || e.code == "Escape") {
-        if (updateTimer == null) {
-            startUpdateTimer()
-        } else {
-            stopUpdateTimer()
-        }
     }
 }
 
