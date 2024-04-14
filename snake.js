@@ -18,6 +18,18 @@ alphaLostPerUpdateCycle = 1
 
 var snakeBody = []
 
+class Snake {
+    constructor() {
+        this.x = snakeX
+        this.y = snakeY
+        this.velocityX = velocityX
+        this.velocityY = velocityY
+        this.color = snakeColor
+        this.alpha = snakeAlpha
+        this.alphaLostPerUpdateCycle = this.alphaLostPerUpdateCycle
+    }
+}
+
 //food
 var foodX
 var foodY
@@ -27,17 +39,17 @@ var updateTimer
 var gameOver = false
 var acceptInput = true
 
-window.onload = function() {
-    board = document.getElementById("board")
-    board.height = rows * blockSize
-    board.width = cols * blockSize
-    context = board.getContext("2d") //used for drawing on the board
+const states = {
+    MainMenu: "main_menu",
+    Playing: "playing",
+    Paused: "paused",
+    GameOver: "game_over"
+}
 
-    placeFood()
-    
+var currentState = states.MainMenu
+
+window.onload = function() {
     document.addEventListener("keyup", getKeyUp)
-    
-    startUpdateTimer() //update 10 times per second
 }
 
 function update() {
@@ -104,6 +116,16 @@ function update() {
 }
 
 function getKeyUp(e) {
+    if ((e.code == "Enter" || e.code == "Space") /*&& currentState == states.MainMenu*/) {
+        if (currentState == states.MainMenu) {
+            currentState = states.Playing
+            startGame()
+        } else if (currentState == states.Playing) {
+            currentState = states.MainMenu
+            exitToMenu()
+        }
+    }
+
     if (e.code == "KeyP" || e.code == "Escape") {
         if (updateTimer == null) {
             startUpdateTimer()
@@ -133,6 +155,29 @@ function getKeyUp(e) {
         velocityY = 0
         acceptInput = false
     }
+}
+
+function startGame() {
+    board = document.getElementById("board")
+    board.height = rows * blockSize
+    board.width = cols * blockSize
+    context = board.getContext("2d") //used for drawing on the board
+
+    placeFood()
+
+    const snake = new Snake()
+    console.log("snake: " + snake.color + ", " + snake.x)
+    
+    // document.addEventListener("keyup", getKeyUp)
+    
+    startUpdateTimer() //update 10 times per second
+}
+
+function exitToMenu() {
+    stopUpdateTimer()
+    snake = null
+    context.clearRect(0, 0, board.width, board.height)
+    board = null
 }
 
 function placeFood() {
