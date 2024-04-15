@@ -63,6 +63,11 @@ var currentState = states.MainMenu
 var snake
 
 window.onload = function() {
+    board = document.getElementById("board")
+    board.height = rows * blockSize
+    board.width = cols * blockSize
+    context = board.getContext("2d") //used for drawing on the board
+    
     document.addEventListener("keyup", getKeyUp)
 }
 
@@ -186,10 +191,6 @@ function getKeyUp(e) {
 }
 
 function startGame() {
-    board = document.getElementById("board")
-    board.height = rows * blockSize
-    board.width = cols * blockSize
-    context = board.getContext("2d") //used for drawing on the board
 
     score = 0
     scoreText = document.getElementById("score")
