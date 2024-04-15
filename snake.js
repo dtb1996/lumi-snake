@@ -266,7 +266,7 @@ function getRgbAlphaValue(alphaDecimal) {
 }
 
 function beep(audioClip) {
-    if (!audioMuted) {
+    if (audioMuted) {
         return
     }
     switch (audioClip) {
