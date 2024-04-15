@@ -120,6 +120,7 @@ function update() {
     acceptInput = true
 
     if (gameOver) {
+        stopUpdateTimer()
         return
     }
 
