@@ -6,27 +6,30 @@ var board
 var context //drawing object
 
 //snake head
-var snakeX = blockSize * 5 //snake starts at (5, 5)
-var snakeY = blockSize * 5
+var snakeStartX = blockSize * 5 //snake starts at (5, 5)
+var snakeStartY = blockSize * 5
 
-var velocityX = 0
-var velocityY = 0
+// var velocityX = 0
+// var velocityY = 0
 
 snakeColor = "#32CD32"
-snakeAlpha = 100
+maxAlpha = 100
 alphaLostPerUpdateCycle = 1
 
 var snakeBody = []
 
 class Snake {
     constructor() {
-        this.x = snakeX
-        this.y = snakeY
-        this.velocityX = velocityX
-        this.velocityY = velocityY
+        this.x = snakeStartX
+        this.y = snakeStartY
+        this.velocityX = 0
+        this.velocityY = 0
         this.color = snakeColor
-        this.alpha = snakeAlpha
-        this.alphaLostPerUpdateCycle = this.alphaLostPerUpdateCycle
+        this.setMaxAlpha()
+    }
+
+    setMaxAlpha()  {
+        this.alpha = maxAlpha
     }
 }
 
@@ -47,6 +50,8 @@ const states = {
 }
 
 var currentState = states.MainMenu
+// const snake = new Snake()
+var snake
 
 window.onload = function() {
     document.addEventListener("keyup", getKeyUp)
@@ -63,11 +68,11 @@ function update() {
     context.fillRect(0, 0, board.width, board.height)
 
     //update snake opacity
-    snakeAlpha -= alphaLostPerUpdateCycle
+    snake.alpha -= snake.alphaLostPerUpdateCycle
 
     //check if snake head is overlapping food
-    if (snakeX == foodX && snakeY == foodY) {
-        snakeAlpha = 100
+    if (snake.x == foodX && snake.y == foodY) {
+        snake.alpha = snake.setMaxAlpha
         snakeBody.push([foodX, foodY])
         placeFood()
     }
@@ -81,20 +86,20 @@ function update() {
             snakeBody[i] = snakeBody[i - 1]
         }
         if (snakeBody.length) {
-            snakeBody[0] = [snakeX, snakeY]
+            snakeBody[0] = [snake.x, snake.y]
         }
     }
 
     //create string from snake color and current opacity
-    const snakeColorStr = snakeAlpha <= 0 ? "transparent" : snakeColor + convertAlphaToHex(snakeAlpha)
-    context.fillStyle = "rgb(0," + getRgbAlphaValue(snakeAlpha) + ",0, 1.0)" //snakeColorStr
+    const snakeColorStr = snake.alpha <= 0 ? "transparent" : snakeColor + convertAlphaToHex(snake.alpha)
+    context.fillStyle = "rgb(0," + getRgbAlphaValue(snake.alpha) + ",0,1.0)" //snakeColorStr
 
     //update position and draw snake
     if (!gameOver) {
-        snakeX += velocityX * blockSize
-        snakeY += velocityY * blockSize
+        snake.x += snake.velocityX * blockSize
+        snake.y += snake.velocityY * blockSize
     }
-    context.fillRect(snakeX, snakeY, blockSize, blockSize)
+    context.fillRect(snake.x, snake.y, blockSize, blockSize)
 
     //draw snake body
     for (let i = 0; i < snakeBody.length; i++) {
@@ -104,13 +109,13 @@ function update() {
     acceptInput = true
 
     //game over conditions
-    if (snakeX < 0 || snakeX > cols * blockSize - 1 || snakeY < 0 || snakeY > rows * blockSize - 1) {
-        snakeAlpha = 100
+    if (snake.x < 0 || snake.x > cols * blockSize - 1 || snake.y < 0 || snake.y > rows * blockSize - 1) {
+        snake.alpha = snake.setMaxAlpha
         gameOver = true
     }
 
-    if (isOverlappingSnakeBody(snakeX, snakeY)) {
-        snakeAlpha = 100
+    if (isOverlappingSnakeBody(snake.x, snake.y)) {
+        snake.alpha = snake.setMaxAlpha
         gameOver = true
     }
 }
@@ -131,28 +136,29 @@ function getKeyUp(e) {
             startUpdateTimer()
         } else {
             stopUpdateTimer()
+            acceptInput = false
         }
     }
 
-    if (!acceptInput) {
+    if (!acceptInput || !snake) {
         return
     }
 
-    if ((e.code == "ArrowUp" || e.code == "KeyW") && velocityY != 1) {
-        velocityX = 0
-        velocityY = -1
+    if ((e.code == "ArrowUp" || e.code == "KeyW") && snake.velocityY != 1) {
+        snake.velocityX = 0
+        snake.velocityY = -1
         acceptInput = false
-    } else if ((e.code == "ArrowDown" || e.code == "KeyS") && velocityY != -1) {
-        velocityX = 0
-        velocityY = 1
+    } else if ((e.code == "ArrowDown" || e.code == "KeyS") && snake.velocityY != -1) {
+        snake.velocityX = 0
+        snake.velocityY = 1
         acceptInput = false
-    } else if ((e.code == "ArrowLeft" || e.code == "KeyA") && velocityX != 1) {
-        velocityX = -1
-        velocityY = 0
+    } else if ((e.code == "ArrowLeft" || e.code == "KeyA") && snake.velocityX != 1) {
+        snake.velocityX = -1
+        snake.velocityY = 0
         acceptInput = false
-    } else if ((e.code == "ArrowRight" || e.code == "KeyD") && velocityX != -1) {
-        velocityX = 1
-        velocityY = 0
+    } else if ((e.code == "ArrowRight" || e.code == "KeyD") && snake.velocityX != -1) {
+        snake.velocityX = 1
+        snake.velocityY = 0
         acceptInput = false
     }
 }
@@ -165,10 +171,13 @@ function startGame() {
 
     placeFood()
 
-    const snake = new Snake()
+    snake = new Snake()
+    snakeBody = []
     console.log("snake: " + snake.color + ", " + snake.x)
     
     // document.addEventListener("keyup", getKeyUp)
+
+    acceptInput = true
     
     startUpdateTimer() //update 10 times per second
 }
