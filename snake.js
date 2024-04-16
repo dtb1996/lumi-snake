@@ -50,6 +50,7 @@ class Snake {
 var foodX
 var foodY
 
+//game-related
 var interval
 var updateTimer
 var gameOver = false
@@ -74,6 +75,10 @@ window.onload = function() {
     context = board.getContext("2d") //used for drawing on the board
     
     document.addEventListener("keyup", getKeyUp)
+
+    //draw background
+    context.fillStyle = "black"
+    context.fillRect(0, 0, board.width, board.height)
 }
 
 function update() {
@@ -138,6 +143,11 @@ function update() {
 }
 
 function getKeyUp(e) {
+    if (e.code == "KeyR" && currentState == states.Playing) {
+        exitToMenu()
+        startGame()
+    }
+
     if ((e.code == "Enter" || e.code == "Space")) {
         if (currentState == states.MainMenu) {
             currentState = states.Playing
@@ -204,7 +214,10 @@ function startGame() {
 function exitToMenu() {
     stopUpdateTimer()
     snake = null
-    context.clearRect(0, 0, board.width, board.height)
+
+    //draw background
+    context.fillStyle = "black"
+    context.fillRect(0, 0, board.width, board.height)
 }
 
 function placeFood() {
