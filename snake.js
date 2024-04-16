@@ -21,8 +21,6 @@ snakeColor = "#32CD32"
 maxAlpha = 100
 alphaLostPerUpdateCycle = 1
 
-var snakeBody = []
-
 class Snake {
     constructor() {
         this.x = snakeStartX
@@ -31,6 +29,20 @@ class Snake {
         this.velocityY = 0
         this.color = snakeColor
         this.alpha = maxAlpha
+        this.body = []
+    }
+
+    pushBody(x, y) {
+        this.body.push([x, y])
+    }
+
+    updateBodyPosition() {
+        for (let i = this.body.length - 1; i > 0; i--) {
+            this.body[i] = this.body[i - 1]
+        }
+        if (this.body.length) {
+            this.body[0] = [snake.x, snake.y]
+        }
     }
 }
 
@@ -52,7 +64,7 @@ const states = {
 }
 
 var currentState = states.MainMenu
-// const snake = new Snake()
+
 var snake
 
 window.onload = function() {
@@ -65,8 +77,6 @@ window.onload = function() {
 }
 
 function update() {
-    console.log("update") //TODO: remove log
-
     //draw background
     context.fillStyle = "black"
     context.fillRect(0, 0, board.width, board.height)
@@ -80,7 +90,7 @@ function update() {
         score += 1
         scoreText.innerHTML = score
         snake.alpha = maxAlpha
-        snakeBody.push([foodX, foodY])
+        snake.pushBody(foodX, foodY)
         placeFood()
     }
 
@@ -88,28 +98,22 @@ function update() {
     context.fillStyle = "red"
     context.fillRect(foodX, foodY, blockSize, blockSize)
 
+    //update position and draw snake
     if (!gameOver) {
-        for (let i = snakeBody.length - 1; i > 0; i--) {
-            snakeBody[i] = snakeBody[i - 1]
-        }
-        if (snakeBody.length) {
-            snakeBody[0] = [snake.x, snake.y]
-        }
+        snake.updateBodyPosition()
+        snake.x += snake.velocityX * blockSize
+        snake.y += snake.velocityY * blockSize
     }
 
     //set snake color from current alpha
     context.fillStyle = "rgb(0," + getRgbAlphaValue(snake.alpha) + ",0,1.0)"
 
-    //update position and draw snake
-    if (!gameOver) {
-        snake.x += snake.velocityX * blockSize
-        snake.y += snake.velocityY * blockSize
-    }
+    //draw snake head
     context.fillRect(snake.x, snake.y, blockSize, blockSize)
 
     //draw snake body
-    for (let i = 0; i < snakeBody.length; i++) {
-        context.fillRect(snakeBody[i][0], snakeBody[i][1], blockSize, blockSize)
+    for (let i = 0; i < snake.body.length; i++) {
+        context.fillRect(snake.body[i][0], snake.body[i][1], blockSize, blockSize)
     }
 
     acceptInput = true
@@ -186,10 +190,10 @@ function startGame() {
     scoreText = document.getElementById("score")
     scoreText.innerHTML = score
 
-    placeFood()
-
     snake = new Snake()
-    snakeBody = []
+    // snakeBody = []
+
+    placeFood()
 
     gameOver = false
     acceptInput = true
@@ -212,8 +216,9 @@ function placeFood() {
 }
 
 function isOverlappingSnakeBody(x, y) {
-    for (let i = 0; i < snakeBody.length; i++) {
-        if (x == snakeBody[i][0] && y == snakeBody[i][1]) {
+    var snakeBody2 = snake.body
+    for (let i = 0; i < snakeBody2.length; i++) {
+        if (x == snakeBody2[i][0] && y == snakeBody2[i][1]) {
             return true
         }
     }
