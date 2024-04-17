@@ -75,6 +75,7 @@ window.onload = function() {
     context = board.getContext("2d") //used for drawing on the board
     
     document.addEventListener("keyup", getKeyUp)
+    document.addEventListener("click", onClick, false)
 
     //draw background
     context.fillStyle = "black"
@@ -191,6 +192,25 @@ function getKeyUp(e) {
         snake.velocityX = 1
         snake.velocityY = 0
         acceptInput = false
+    }
+}
+
+function onClick(e) {
+    var rect = board.getBoundingClientRect()
+    var mouseX = e.clientX - rect.left
+    var mouseY = e.clientY - rect.top
+
+    if (mouseX >= 0 && mouseX <= board.width && mouseY >= 0 && mouseY <= board.height) {
+        console.log("click within canvas boundaries")
+        if (currentState == states.MainMenu) {
+            currentState = states.Playing
+            startGame()
+        } else if (currentState == states.Playing) {
+            currentState = states.MainMenu
+            exitToMenu()
+        }
+    } else {
+        console.log("click outside boundaries")
     }
 }
 
