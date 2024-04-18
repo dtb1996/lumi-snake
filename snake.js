@@ -53,6 +53,7 @@ var foodY
 //game-related
 var interval
 var updateTimer
+var gameOverAiTimer
 var gameOver = false
 var acceptInput = true
 var audioMuted = false
@@ -80,6 +81,8 @@ window.onload = function() {
     //draw background
     context.fillStyle = "black"
     context.fillRect(0, 0, board.width, board.height)
+
+    startGame()
 }
 
 function update() {
@@ -92,7 +95,9 @@ function update() {
 
     //check if snake head is overlapping food
     if (snake.x == foodX && snake.y == foodY) {
-        beep("snd1")
+        if (currentState == states.Playing) {
+            beep("snd1")
+        }
         score += 1
         scoreText.innerHTML = score
         snake.alpha = maxAlpha
@@ -103,6 +108,10 @@ function update() {
     //draw food
     context.fillStyle = "red"
     context.fillRect(foodX, foodY, blockSize, blockSize)
+
+    if (currentState == states.MainMenu) {
+        setAiSnakeVelocity()
+    }
 
     //update position and draw snake
     if (!gameOver) {
@@ -132,14 +141,24 @@ function update() {
     //game over conditions
     if (snake.x < 0 || snake.x > cols * blockSize - 1 || snake.y < 0 || snake.y > rows * blockSize - 1) {
         snake.alpha = maxAlpha
+        if (!gameOver && currentState == states.MainMenu) {
+            startAiGameOverTimer()
+        }
         gameOver = true
-        beep("snd2")
+        if (currentState == states.Playing) {
+            beep("snd2")
+        }
     }
 
     if (isOverlappingSnakeBody(snake.x, snake.y)) {
         snake.alpha = maxAlpha
+        if (!gameOver && currentState == states.MainMenu) {
+            startAiGameOverTimer()
+        }
         gameOver = true
-        beep("snd2")
+        if (currentState == states.Playing) {
+            beep("snd2")
+        }
     }
 }
 
@@ -238,6 +257,8 @@ function exitToMenu() {
     //draw background
     context.fillStyle = "black"
     context.fillRect(0, 0, board.width, board.height)
+
+    startGame()
 }
 
 function placeFood() {
@@ -261,13 +282,51 @@ function isOverlappingSnakeBody(x, y) {
 
 function startUpdateTimer() {
     if (updateTimer == null) {
-        updateTimer = setInterval(update, 1000 / 10)
+        updateTimer = setInterval(update, 1000 / 10/*/ 10*/)
     }
 }
 
 function stopUpdateTimer() {
     clearInterval(updateTimer)
     updateTimer = null
+}
+
+function startAiGameOverTimer() {
+    if (gameOverAiTimer == null) {
+        gameOverAiTimer = setTimeout(onAiGameOverTimerTimeout, 2000)
+    }
+}
+
+function onAiGameOverTimerTimeout() {
+    if (currentState == states.MainMenu) {
+        startGame()
+    }
+}
+
+function setAiSnakeVelocity() {
+    var prioritzeX = Math.abs(snake.x - foodX) < Math.abs(snake.y - foodY)
+        
+    if (prioritzeX) {
+        if (snake.x !== foodX) {
+            snake.velocityX = snake.x < foodX && snake.velocityX !== -1 ? 1  :
+                        snake.x > foodX && snake.velocityX !== 1  ? -1 : 0
+            snake.velocityY = snake.velocityX === 0 ? (snake.y > board.height / 2 ? -1 : 1) : 0
+        } else {
+            snake.velocityY = snake.y < foodY && snake.velocityY !== -1 ?  1 :
+                        snake.y > foodY && snake.velocityY !== 1  ? -1 : 0
+            snake.velocityX = snake.velocityY === 0 ? (snake.x < board.width / 2 ? 1 : -1) : 0
+        }
+    } else {
+        if (snake.y !== foodY) {
+            snake.velocityY = snake.y < foodY && snake.velocityY !== -1 ?  1 :
+                        snake.y > foodY && snake.velocityY !== 1  ? -1 : 0
+            snake.velocityX = snake.velocityY === 0 ? (snake.x < board.width / 2 ? 1 : -1) : 0
+        } else {
+            snake.velocityX = snake.x < foodX && snake.velocityX !== -1 ? 1  :
+                        snake.x > foodX && snake.velocityX !== 1  ? -1 : 0
+            snake.velocityY = snake.velocityX === 0 ? (snake.y > board.height / 2 ? -1 : 1) : 0
+        }
+    }
 }
 
 function getRgbAlphaValue(alphaDecimal) {
