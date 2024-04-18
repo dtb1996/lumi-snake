@@ -240,7 +240,6 @@ function startGame() {
     scoreText.innerHTML = score
 
     snake = new Snake()
-    // snakeBody = []
 
     placeFood()
 
@@ -270,9 +269,9 @@ function placeFood() {
 }
 
 function isOverlappingSnakeBody(x, y) {
-    var snakeBody2 = snake.body
-    for (let i = 0; i < snakeBody2.length; i++) {
-        if (x == snakeBody2[i][0] && y == snakeBody2[i][1]) {
+    var snakeBody = snake.body
+    for (let i = 0; i < snakeBody.length; i++) {
+        if (x == snakeBody[i][0] && y == snakeBody[i][1]) {
             return true
         }
     }
