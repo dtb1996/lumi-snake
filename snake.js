@@ -4,6 +4,7 @@ var rows = 21
 var cols = 21
 var board
 var context //drawing object
+var menuText
 
 //score
 var scoreRow
@@ -58,6 +59,7 @@ var gameOverAiTimer
 var gameOver = false
 var acceptInput = true
 var audioMuted = false
+var firstInput = false
 
 const states = {
     MainMenu: "main_menu",
@@ -83,6 +85,10 @@ window.onload = function() {
     context.fillStyle = "black"
     context.fillRect(0, 0, board.width, board.height)
 
+    scoreText = document.getElementById("score")
+    scoreRow = document.getElementById("scoreRow")
+    menuText = document.getElementById("mainMenuText")
+
     startGame()
 }
 
@@ -92,7 +98,7 @@ function update() {
     context.fillRect(0, 0, board.width, board.height)
 
     //update snake opacity
-    snake.alpha -= alphaLostPerUpdateCycle
+    snake.alpha -= firstInput ? alphaLostPerUpdateCycle : 0
 
     //check if snake head is overlapping food
     if (snake.x == foodX && snake.y == foodY) {
@@ -202,18 +208,22 @@ function getKeyUp(e) {
         snake.velocityX = 0
         snake.velocityY = -1
         acceptInput = false
+        firstInput = true
     } else if ((e.code == "ArrowDown" || e.code == "KeyS") && snake.velocityY != -1) {
         snake.velocityX = 0
         snake.velocityY = 1
         acceptInput = false
+        firstInput = true
     } else if ((e.code == "ArrowLeft" || e.code == "KeyA") && snake.velocityX != 1) {
         snake.velocityX = -1
         snake.velocityY = 0
         acceptInput = false
+        firstInput = true
     } else if ((e.code == "ArrowRight" || e.code == "KeyD") && snake.velocityX != -1) {
         snake.velocityX = 1
         snake.velocityY = 0
         acceptInput = false
+        firstInput = true
     }
 }
 
@@ -236,10 +246,10 @@ function onClick(e) {
 function startGame() {
     // setup score elements
     score = 0
-    scoreText = document.getElementById("score")
     scoreText.innerHTML = score
-    scoreRow = document.getElementById("scoreRow")
     scoreRow.style.visibility = currentState == states.Playing ? "visible" : "hidden"
+
+    menuText.style.visibility = currentState == states.Playing ? "hidden" : "visible"
 
     snake = new Snake()
 
@@ -247,6 +257,7 @@ function startGame() {
 
     gameOver = false
     acceptInput = true
+    firstInput = false
     
     startUpdateTimer() //update 10 times per second
 }
