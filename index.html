@@ -3,18 +3,33 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport", content="width=device-width, initial-scale=1.0">
-        <title>Power Snake</title>
+        <title>Lumi-Snake</title>
         <link rel="stylesheet" href="snake.css">
         <script src="snake.js"></script>
     </head>
     <body>
-        <h1>Power Snake</h1>
+        <h1>Lumi-Snake</h1>
+        <h3 id="mainMenuText">Press Enter or Click the viewport to begin</h3>
         <canvas id="board"></canvas>
         <div class="container">
             <table id="table1">
-                <tr>
+                <tr id="scoreRow">
                     <td>Score: </td>
                     <td id="score">0000</td>
+                </tr>                
+            </table>
+            <table id="table2">
+                <tr id="controlsRow1">
+                    <td>Movement: </td>
+                    <td>Arrow Keys, WASD</td>
+                </tr>
+                <tr id="controlsRow2">
+                    <td>Pause: </td>
+                    <td>P</td>
+                </tr>
+                <tr id="controlsRow3">
+                    <td>Exit to Menu: </td>
+                    <td>Esc</td>
                 </tr>
             </table>
         </div>

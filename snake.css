@@ -7,11 +7,15 @@ div.container {
     width:98%; 
     margin:1%;
 }
-table#table1 {
+table {
     text-align:center; 
     margin-left:auto; 
     margin-right:auto; 
     width:100px;
+    white-space: nowrap;
+}
+table#table2 {
+    padding-top: 20px;
 }
 tr,td {
     text-align:left;
