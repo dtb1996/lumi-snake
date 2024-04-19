@@ -257,7 +257,7 @@ function startGame() {
 
     gameOver = false
     acceptInput = true
-    firstInput = false
+    firstInput = currentState == states.MainMenu
     
     startUpdateTimer() //update 10 times per second
 }
@@ -310,6 +310,7 @@ function startAiGameOverTimer() {
 }
 
 function onAiGameOverTimerTimeout() {
+    gameOverAiTimer = null
     if (currentState == states.MainMenu) {
         startGame()
     }
