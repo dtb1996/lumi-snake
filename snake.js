@@ -5,6 +5,7 @@ var cols = 21
 var board
 var context //drawing object
 var menuText
+var muteText
 
 //score
 var scoreRow
@@ -88,6 +89,7 @@ window.onload = function() {
     scoreText = document.getElementById("score")
     scoreRow = document.getElementById("scoreRow")
     menuText = document.getElementById("mainMenuText")
+    muteText = document.getElementById("muteLabel")
 
     startGame()
 }
@@ -198,6 +200,7 @@ function getKeyUp(e) {
 
     if (e.code == "KeyM") {
         audioMuted = !audioMuted
+        muteText.innerHTML = audioMuted ? "Unmute:" : "Mute:"
     }
 
     if (!acceptInput || !snake) {

@@ -14,10 +14,15 @@ table {
     width:100px;
     white-space: nowrap;
 }
-table#table2 {
-    padding-top: 20px;
+#tableHdr {
+    font-weight: bold;
+    padding-top: 10px;
 }
 tr,td {
     text-align:left;
     font-weight: bold;
+}
+p {
+    margin: auto;
+    max-width: 70%;
 }
