@@ -18,6 +18,9 @@ table {
     font-weight: bold;
     padding-top: 10px;
 }
+#scoreRow {
+    font-size: large;
+}
 tr,td {
     text-align:left;
     font-weight: bold;

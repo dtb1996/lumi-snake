@@ -4,7 +4,7 @@ var rows = 21
 var cols = 21
 var board
 var context //drawing object
-var menuText
+var statusText
 var muteText
 
 //score
@@ -88,7 +88,7 @@ window.onload = function() {
 
     scoreText = document.getElementById("score")
     scoreRow = document.getElementById("scoreRow")
-    menuText = document.getElementById("mainMenuText")
+    statusText = document.getElementById("status")
     muteText = document.getElementById("muteLabel")
 
     startGame()
@@ -155,6 +155,8 @@ function update() {
         }
         gameOver = true
         if (currentState == states.Playing) {
+            statusText.innerHTML = "Press Enter or Click the viewport to try again"
+            statusText.style.visibility = "visible"
             beep("snd2")
         }
     }
@@ -166,6 +168,8 @@ function update() {
         }
         gameOver = true
         if (currentState == states.Playing) {
+            statusText.innerHTML = "Press Enter or Click the viewport to try again"
+            statusText.style.visibility = "visible"
             beep("snd2")
         }
     }
@@ -181,6 +185,9 @@ function getKeyUp(e) {
         if (currentState == states.MainMenu) {
             currentState = states.Playing
             startGame()
+        } else if (currentState == states.Playing && gameOver) {
+            exitToMenu()
+            startGame()
         }
     }
 
@@ -191,10 +198,13 @@ function getKeyUp(e) {
 
     if (e.code == "KeyP" && currentState == states.Playing) {
         if (updateTimer == null) {
+            statusText.style.visibility = "hidden"
             startUpdateTimer()
         } else {
             stopUpdateTimer()
             acceptInput = false
+            statusText.innerHTML = "Paused"
+            statusText.style.visibility = "visible"
         }
     }
 
@@ -240,7 +250,7 @@ function onClick(e) {
             currentState = states.Playing
             startGame()
         } else if (currentState == states.Playing) {
-            currentState = states.MainMenu
+            // currentState = states.MainMenu
             exitToMenu()
         }
     }
@@ -252,7 +262,8 @@ function startGame() {
     scoreText.innerHTML = score
     scoreRow.style.visibility = currentState == states.Playing ? "visible" : "hidden"
 
-    menuText.style.visibility = currentState == states.Playing ? "hidden" : "visible"
+    statusText.innerHTML = "Press Enter or Click the viewport to try begin"
+    statusText.style.visibility = currentState == states.Playing ? "hidden" : "visible"
 
     snake = new Snake()
 
@@ -262,7 +273,7 @@ function startGame() {
     acceptInput = true
     firstInput = currentState == states.MainMenu
     
-    startUpdateTimer() //update 10 times per second
+    startUpdateTimer()
 }
 
 function exitToMenu() {
@@ -297,7 +308,7 @@ function isOverlappingSnakeBody(x, y) {
 
 function startUpdateTimer() {
     if (updateTimer == null) {
-        updateTimer = setInterval(update, 1000 / 10/*/ 10*/)
+        updateTimer = setInterval(update, 1000 / 10) //call update() 10 times per second
     }
 }
 
