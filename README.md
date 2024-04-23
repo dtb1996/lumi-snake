@@ -12,9 +12,9 @@ The goal of this project was to use basic web tools to make a simple game. Norma
 
 ## Optimizations
 
- **Base64 audio conversion** One of the optional jam challenges was to fit the entire game into a 13 kb zip file. To include sound effects I decided to use an online Base64 audio conversion tool to reduce their storage footprint. **Link to Base64.Guru:** https://base64.guru/converter/encode/audio/mp3
+ **Base64 audio conversion:** One of the optional jam challenges was to fit the entire game into a 13 kb zip file. To include sound effects I decided to use an online Base64 audio conversion tool to reduce their storage footprint. **Link to Base64.Guru:** https://base64.guru/converter/encode/audio/mp3
 
- **Reused code for demo** To reduce the complexity and size of the project, the demo snake controller uses the same snake object and game logic as the in-game snake. The major difference between the two modes in how the movement velocity is calculated since the demo snake needed to move to the food without player input.
+ **Reused code:** To reduce the complexity and size of the project, the demo snake controller uses the same snake object and game logic as the in-game snake. The major difference between the two modes in how the movement velocity is calculated since the demo snake needed to move to the food without player input.
 
  ## Lession Learned
 
