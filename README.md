@@ -4,7 +4,7 @@ A variation on the classic Snake game created for the Gamedev.js Jam 2024.
 
 **Link to project:** https://dillionaire.itch.io/lumi-snake
 
-## How it was made:
+## How it was made
 
 **Tech Used:** HTML, CSS, JavaScript
 
